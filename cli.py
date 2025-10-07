@@ -34,6 +34,20 @@ def list_tasks():
         status = "✔" if t["completed"] else " "
         print(f"[{t['id']}] [{status}] {t['description']}")
 
+def complete_task(task_id):
+    tasks = load_tasks()
+    found = False
+    for t in tasks:
+        if t["id"] == task_id:
+            t["completed"] = True
+            found = True
+            break
+    if not found:
+        print(f"No task with id {task_id}")
+        return
+    save_tasks(tasks)
+    print(f"Task {task_id} marked as completed")
+
 def print_usage():
     print("Usage:")
     print("  python cli.py add <description>")
@@ -52,6 +66,12 @@ def main():
         add_task(description)
     elif command == "list":
         list_tasks()
+    elif command == "complete" and len(sys.argv) == 3:
+        try:
+            tid = int(sys.argv[2])
+            complete_task(tid)
+        except ValueError:
+            print("Invalid task id")
     else:
         print_usage()
 
