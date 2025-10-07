@@ -48,6 +48,18 @@ def complete_task(task_id):
     save_tasks(tasks)
     print(f"Task {task_id} marked as completed")
 
+def delete_task(task_id):
+    tasks = load_tasks()
+    new_tasks = [t for t in tasks if t["id"] != task_id]
+    if len(new_tasks) == len(tasks):
+        print(f"No task with id {task_id}")
+        return
+    # Reassign ids (optional)
+    for idx, t in enumerate(new_tasks, start=1):
+        t["id"] = idx
+    save_tasks(new_tasks)
+    print(f"Deleted task {task_id}")
+
 def print_usage():
     print("Usage:")
     print("  python cli.py add <description>")
@@ -70,6 +82,12 @@ def main():
         try:
             tid = int(sys.argv[2])
             complete_task(tid)
+        except ValueError:
+            print("Invalid task id")
+    elif command == "delete" and len(sys.argv) == 3:
+        try:
+            tid = int(sys.argv[2])
+            delete_task(tid)
         except ValueError:
             print("Invalid task id")
     else:
