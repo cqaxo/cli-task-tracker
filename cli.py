@@ -25,6 +25,15 @@ def add_task(description):
     save_tasks(tasks)
     print(f"Added task {new_task['id']}: {description}")
 
+def list_tasks():
+    tasks = load_tasks()
+    if not tasks:
+        print("No tasks yet.")
+        return
+    for t in tasks:
+        status = "✔" if t["completed"] else " "
+        print(f"[{t['id']}] [{status}] {t['description']}")
+
 def print_usage():
     print("Usage:")
     print("  python cli.py add <description>")
@@ -41,6 +50,8 @@ def main():
     if command == "add" and len(sys.argv) >= 3:
         description = " ".join(sys.argv[2:])
         add_task(description)
+    elif command == "list":
+        list_tasks()
     else:
         print_usage()
 
