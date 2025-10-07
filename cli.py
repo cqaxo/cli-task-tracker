@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+from src.commands import add_task, list_tasks, complete_task, delete_task
 
 TASKS_FILE = "tasks.json"
 
@@ -74,20 +75,35 @@ def main():
 
     command = sys.argv[1]
     if command == "add" and len(sys.argv) >= 3:
-        description = " ".join(sys.argv[2:])
-        add_task(description)
+        desc = " ".join(sys.argv[2:])
+        t = add_task(desc)
+        print(f"Added task {t['id']}: {t['description']}")
     elif command == "list":
-        list_tasks()
+        tasks = list_tasks()
+        if not tasks:
+            print("No tasks yet.")
+        else:
+            for t in tasks:
+                status = "✔" if t["completed"] else " "
+                print(f"[{t['id']}] [{status}] {t['description']}")
     elif command == "complete" and len(sys.argv) == 3:
         try:
             tid = int(sys.argv[2])
-            complete_task(tid)
+            ok = complete_task(tid)
+            if ok:
+                print(f"Task {tid} marked as completed")
+            else:
+                print(f"No task with id {tid}")
         except ValueError:
             print("Invalid task id")
     elif command == "delete" and len(sys.argv) == 3:
         try:
             tid = int(sys.argv[2])
-            delete_task(tid)
+            ok = delete_task(tid)
+            if ok:
+                print(f"Deleted task {tid}")
+            else:
+                print(f"No task with id {tid}")
         except ValueError:
             print("Invalid task id")
     else:
